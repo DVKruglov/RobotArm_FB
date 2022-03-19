@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="FB_RobotArm" Id="{791aebaa-e1af-4e34-82e6-21b6dcafec81}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_RobotArm
+VAR
+	Inputs 	AT%I* 	: ST_Inputs;
+	Outputs AT%Q* 	: ST_Outputs;
+	RobotArmJoints 	: ARRAY [1..GVL_RobotArm.NUMBER_OF_JOINTS] OF INT;
+	Index 			: INT;
+	
+	//BoxPlaceLocation	: ARRAY [E_BoxPlaceDirection.PLACE1..E_BoxPlaceDirection.LastPlace] OF INT;
+END_VAR
+
+VAR PERSISTENT
+	LSTEPS		: INT := 0;
+	RSTEPS		: INT := 0;
+	FirstScan 	: BOOL := TRUE;	
+	
+	InputsDecoupled		: ST_Inputs;
+END_VAR
+
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_M_StatusUpdate();
+
+
+(*
+	WRITE PUBLIC METHODS TO DO THE FOLLOWING:
+	MOVE ONLY
+		1. Move hand to Place #1
+		2. Move hand to Place #2
+		
+	MOVE + GRIP
+		3. PickUpFromPlace( placenum := x )
+		4. PlaceTo( placenum := x )
+
+*)
+
+]]></ST>
+    </Implementation>
+    <Folder Name="Private" Id="{8e206af4-6c72-4040-98dd-746c939058b7}" />
+    <Method Name="_M_DefaultPosition" Id="{b4076654-83fc-4691-b1b5-978eda6f60b7}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE _M_DefaultPosition : BOOL
+VAR
+	Index		: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_M_GripControl( Close := TRUE ); // METHOD( INPUT := , OUTPUT => )
+	
+FOR Index := 1 TO GVL_RobotArm.NUMBER_OF_JOINTS DO 
+	Outputs.JOINT_TURN_LEFT[Index] := FALSE;
+	Outputs.JOINT_TURN_RIGHT[Index]:=FALSE;//optimisation of//inputs.JOINT_TURN_RIGHT1:=inputs.JOINT_TURN_RIGHT2:=inputs.JOINT_TURN_RIGHT3:=inputs.JOINT_TURN_RIGHT4:=FALSE;
+		
+	LSTEPS:=RSTEPS:=0; // Will it be understandable?
+END_FOR
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_M_GripControl" Id="{4500713e-daab-4b5f-93b1-f1dfd3fbfba4}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE _M_GripControl : BOOL
+VAR_INPUT
+	Close	: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Outputs.GRIP_CLOSE := Close;
+Outputs.GRIP_OPEN := NOT Close;
+
+		]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_M_StatusUpdate" Id="{424b32d3-2991-4e75-a053-29a008bea2c1}">
+      <Declaration><![CDATA[METHOD PRIVATE _M_StatusUpdate : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[InputsDecoupled.GRIP_CONDITION := Inputs.GRIP_CONDITION;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_M_StraightJoint" Id="{3a826016-47df-4ee5-b177-5499df6b2db5}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE _M_StraightJoint : BOOL
+VAR
+	Joint				: INT :=1;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Outputs.GRIP_CLOSE:=TRUE;
+
+Outputs.JOINT_TURN_LEFT[Joint] := FALSE;
+Outputs.JOINT_TURN_RIGHT[Joint] := FALSE;
+
+//FOR Index := 1 TO GVL_RobotArm.NUMBER_OF_JOINTS BY 1 DO
+//	inputs.JOINT_TURN_LEFT[Index]:=FALSE;
+//	inputs.JOINT_TURN_RIGHT[Index]:=FALSE;
+//END_FOR
+
+(* CASE StraightPosition OF 
+1:	inputs.JOINT_TURN_LEFT1:=FALSE;
+	inputs.JOINT_TURN_RIGHT1:=FALSE;
+2: 	inputs.JOINT_TURN_LEFT2:=FALSE;
+	inputs.JOINT_TURN_RIGHT2:=FALSE;
+3: 	inputs.JOINT_TURN_LEFT3:=FALSE;
+	inputs.JOINT_TURN_RIGHT3:=FALSE;
+4: 	inputs.JOINT_TURN_LEFT4:=FALSE;
+	inputs.JOINT_TURN_RIGHT4:=FALSE;	
+END_CASE *)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_PickUpFromPlace" Id="{bb47bc22-22d9-491b-a40c-674ad464a234}">
+      <Declaration><![CDATA[METHOD PUBLIC M_PickUpFromPlace : BOOL
+VAR_INPUT
+	PLACE_NUM : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*
+
+	1. Return to default position 
+	2. Move hand to Place 1
+	3. Open Grip
+	4. Close Grip when picked up (picked up => GRIP_CONDITION = TRUE)
+	...
+	optionally: return to default position
+
+*)
+_M_DefaultPosition();
+
+M_TurnJoint( TurnDirection := E_RobotArmJointDirection.LEFT, Joint := 2);
+
+
+IF outputs.GRIP_OPEN THEN
+	outputs.GRIP_CLOSE		:=FALSE;
+	inputs.PLACE1			:=TRUE;
+	inputs.GRIP_CONDITION	:=FALSE;
+ELSIF inputs.GRIP_CONDITION THEN
+	Outputs.GRIP_CLOSE		:=TRUE;
+	_M_DefaultPosition();
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_Place1" Id="{7a23719a-1aae-4640-a5ff-01800871be7e}">
+      <Declaration><![CDATA[METHOD PUBLIC M_Place1 : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+(*
+
+	1. Return to default position 
+	2. Move hand to Place 1
+	3. Open Grip 
+	...
+	optionally: return to default position BUT returning to default must be performed ONLY IF GRIP_CONDITION EMPTY
+
+*)
+_M_DefaultPosition(Default:=TRUE);
+M_TurnJoint(TurnDirection:='LEFT');
+outputs.GRIP_OPEN:=FALSE;
+
+IF Inputs.GRIP_CONDITION THEN
+	inputs.GRIP_CONDITION:=FALSE;
+ _M_DefaultPosition(Default:=TRUE);
+
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_Place2" Id="{0e169f60-7ed8-4039-bfcf-3f2af81e03a2}">
+      <Declaration><![CDATA[METHOD PUBLIC M_Place2 : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*
+
+	1. Return to default position 
+	2. Move hand to Place 2
+	3. Open Grip
+	...
+	optionally: return to default position BUT returning to default must be performed ONLY IF GRIP_CONDITION EMPTY
+
+*)
+
+_M_DefaultPosition(Default:=TRUE);
+M_TurnJoint(TurnDirection:='RIGHT');
+outputs.GRIP_OPEN:=TRUE;
+
+IF outputs.GRIP_OPEN THEN
+	inputs.GRIP_CONDITION:=FALSE;
+ _M_DefaultPosition(Default:=TRUE);
+
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_PlaceTo" Id="{9e7cd9ea-bfbb-4743-ac1e-c348e4a0ec1b}">
+      <Declaration><![CDATA[METHOD PUBLIC M_PlaceTo : BOOL
+VAR_INPUT
+	PLACE_NUM : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*
+
+	1. Return to default position 
+	2. Move hand to Place 2
+	3. Open Grip
+	4. Close Grip when picked up (picked up => GRIP_CONDITION = TRUE)
+	...
+	optionally: return to default position
+
+*)
+_M_DefaultPosition(Default:=TRUE);
+M_TurnJoint(TurnDirection:='RIGHT');
+IF inputs.GRIP_CONDITION THEN
+	outputs.GRIP_OPEN		:=TRUE;
+	inputs.PLACE2			:=FALSE;
+ELSIF inputs.GRIP_CONDITION:=FALSE THEN
+	_M_DefaultPosition(Default:=TRUE);
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_TurnJoint" Id="{215986a3-b2d9-4a5b-a2c6-326f10567f86}">
+      <Declaration><![CDATA[METHOD PUBLIC M_TurnJoint : BOOL
+VAR_INPUT
+	TurnDirection 	: INT;
+	Joint			: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE TurnDirection OF 
+	E_RobotArmJointDirection.LEFT: // turn left
+		Outputs.JOINT_TURN_LEFT[Joint] := TRUE;
+	E_RobotArmJointDirection.RIGHT: // turn right
+		Outputs.JOINT_TURN_RIGHT[Joint] := TRUE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_RobotArm">
+      <LineId Id="71" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="101" Count="1" />
+      <LineId Id="106" Count="1" />
+      <LineId Id="103" Count="1" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm._M_DefaultPosition">
+      <LineId Id="28" Count="0" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm._M_GripControl">
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm._M_StatusUpdate">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm._M_StraightJoint">
+      <LineId Id="30" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="39" Count="8" />
+      <LineId Id="38" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_PickUpFromPlace">
+      <LineId Id="46" Count="24" />
+      <LineId Id="24" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_Place1">
+      <LineId Id="21" Count="0" />
+      <LineId Id="12" Count="4" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="22" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_Place2">
+      <LineId Id="15" Count="7" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="24" Count="8" />
+      <LineId Id="23" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_PlaceTo">
+      <LineId Id="9" Count="8" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="44" Count="2" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="27" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_TurnJoint">
+      <LineId Id="150" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="154" Count="2" />
+      <LineId Id="153" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

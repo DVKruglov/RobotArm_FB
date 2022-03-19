@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="ST_Inputs" Id="{d8030c2b-0c85-4476-bc48-afcf06e17b20}">
+    <Declaration><![CDATA[TYPE ST_Inputs :
+STRUCT
+	PLACE1            	: BOOL;
+	PLACE2            	: BOOL;
+	GRIP_CONDITION    	: BOOL;
+	JOINT_RIGHT_SIGNAL	: ARRAY [1..4] OF BOOL;
+	JOINT_LEFT_SIGNAL	: ARRAY [1..4] OF BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

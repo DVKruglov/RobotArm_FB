@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="E_BoxPlaceDirection" Id="{f3a18dd6-5bf0-41b1-b79a-6118fc2ea694}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_BoxPlaceDirection :
+(
+	PLACE1 := 1,
+	PLACE2 := 2,
+	PLACE3 := 3,
+	
+	LastPlace
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

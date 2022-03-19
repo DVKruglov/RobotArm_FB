@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="ST_Outputs" Id="{0304fd20-21e7-467d-aa49-8a654f790651}">
+    <Declaration><![CDATA[TYPE ST_Outputs :
+STRUCT
+	GRIP_OPEN             : BOOL;
+	GRIP_CLOSE            : BOOL;
+	JOINT_TURN_LEFT   : ARRAY [1..4] OF BOOL;
+	JOINT_TURN_RIGHT  : ARRAY [1..4] OF BOOL;
+(*	JOINT_LEFT1_SIGNAL    : BOOL;
+	JOINT_LEFT2_SIGNAL    : BOOL;
+	JOINT_LEFT3_SIGNAL    : BOOL;
+	JOINT_LEFT4_SIGNAL    : BOOL;
+	JOINT_RIGHT1_SIGNAL   : BOOL;
+	JOINT_RIGHT2_SIGNAL   : BOOL;
+	JOINT_RIGHT3_SIGNAL   : BOOL;
+	JOINT_RIGHT4_SIGNAL   : BOOL;  *)
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

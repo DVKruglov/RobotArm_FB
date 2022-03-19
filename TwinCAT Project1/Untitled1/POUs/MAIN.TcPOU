@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="MAIN" Id="{c1ea7bfa-a36b-4e65-912f-71822f4091f2}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	RobotArm			: FB_RobotArm;
+//	RobotArm1Inputs 	: ST_Inputs;
+//	RobotArm1Outputs 	: ST_Outputs;
+	
+//SerialIndex : INT:=1;
+//Index : INT;
+
+
+//LSTEPS   : INT;
+//RSTEPS   : INT;
+
+//START    : BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//RobotArm(ST_Inputs := RobotArm1Inputs, ST_Outputs := RobotArm1Outputs);
+
+RobotArm();
+
+
+
+
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="458" Count="0" />
+      <LineId Id="477" Count="0" />
+      <LineId Id="476" Count="0" />
+      <LineId Id="475" Count="0" />
+      <LineId Id="459" Count="0" />
+      <LineId Id="272" Count="0" />
+      <LineId Id="209" Count="2" />
+      <LineId Id="55" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
