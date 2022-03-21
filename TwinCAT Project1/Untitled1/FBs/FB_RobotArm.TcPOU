@@ -283,7 +283,7 @@ END_VAR
 CASE PLACE_NUM OF
 	1:
 		M_MoveToPlace1();
-	
+		
 	2:
 	
 	
