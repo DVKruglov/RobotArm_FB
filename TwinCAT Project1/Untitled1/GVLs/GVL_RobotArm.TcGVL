@@ -4,6 +4,7 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
 	NUMBER_OF_JOINTS : INT := 4;
-END_VAR]]></Declaration>
+END_VAR
+]]></Declaration>
   </GVL>
 </TcPlcObject>

@@ -21,5 +21,15 @@
       <From>M_PlacedToPlace2</From>
       <To>M_PlaceTo</To>
     </RenamedType>
+    <RenamedType>
+      <Type guid="7a23719a-1aae-4640-a5ff-01800871be7e">M_PLACE1</Type>
+      <From>M_Place1</From>
+      <To>M_MoveToPlace1</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="0e169f60-7ed8-4039-bfcf-3f2af81e03a2">M_PLACE2</Type>
+      <From>M_Place2</From>
+      <To>M_MoveToPlace2</To>
+    </RenamedType>
   </Renames>
 </Refactors>
