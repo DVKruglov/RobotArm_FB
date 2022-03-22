@@ -7,6 +7,7 @@ VAR
 	Outputs AT%Q* 	: ST_Outputs;
 	RobotArmJoints 	: ARRAY [1..GVL_RobotArm.NUMBER_OF_JOINTS] OF INT;
 	Index 			: INT;
+	JointTurnStep	: INT;
 	
 	//BoxPlaceLocation	: ARRAY [E_BoxPlaceDirection.PLACE1..E_BoxPlaceDirection.LastPlace] OF INT;
 END_VAR
@@ -120,8 +121,7 @@ END_CASE *)]]></ST>
     </Method>
     <Method Name="M_MoveToPlace1" Id="{7a23719a-1aae-4640-a5ff-01800871be7e}">
       <Declaration><![CDATA[METHOD PUBLIC M_MoveToPlace1 : BOOL
-VAR_INST
-	JointTurnStep : INT;
+VAR	
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -150,7 +150,7 @@ CASE JointTurnStep OF
 	3: 
 		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.LEFT, Joint := JointTurnStep );
 		IF InputsDecoupled.JOINT_LEFT_SIGNAL[JointTurnStep] THEN
-			JointTurnStep := 4;
+			M_PickUpFromThePlace.PLACE_NUM	:=1;
 		END_IF
 END_CASE
 
@@ -182,8 +182,7 @@ END_IF
     </Method>
     <Method Name="M_MoveToPlace2" Id="{0e169f60-7ed8-4039-bfcf-3f2af81e03a2}">
       <Declaration><![CDATA[METHOD PUBLIC M_MoveToPlace2 : BOOL
-VAR_INST
-	JointTurnStep :	INT; // Can I use the same variable? MoveToPlace1 and 2
+VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -203,7 +202,7 @@ CASE JointTurnStep OF
 	3: 
 		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.RIGHT, Joint := JointTurnStep );
 		IF InputsDecoupled.JOINT_RIGHT_SIGNAL[JointTurnStep] THEN
-			JointTurnStep := 4;
+			M_PlaceTo.PLACE_NUM	:=2;
 		END_IF
 END_CASE
 
@@ -255,15 +254,11 @@ CASE PLACE_NUM OF
 	1: // pick from place 1
 	_M_DefaultPosition();		
 	M_MoveToPlace1();
-	InputsDecoupled.PLACE1 := TRUE;
-	InputsDecoupled.GRIP_CONDITION := TRUE;	
 	_M_GripControl(Close :=	 TRUE);
 		
 	2: // pick from place 2
 	_M_DefaultPosition();		
-	M_MoveToPlace1();
-	InputsDecoupled.PLACE2 := TRUE;
-	InputsDecoupled.GRIP_CONDITION := TRUE;	
+	M_MoveToPlace2();
 	_M_GripControl(Close :=	 TRUE);
 	
 END_CASE
@@ -317,16 +312,12 @@ END_VAR
 CASE PLACE_NUM OF
 	1:
 	_M_DefaultPosition();
-	M_MoveToPlace1();
-	InputsDecoupled.PLACE2 := FALSE;
-	InputsDecoupled.GRIP_CONDITION := TRUE;	
+	M_MoveToPlace1();	
 	_M_GripControl(Close :=	 FALSE);
 		
 	2:
 	_M_DefaultPosition();
 	M_MoveToPlace2();
-	InputsDecoupled.PLACE2 := FALSE;
-	InputsDecoupled.GRIP_CONDITION := TRUE;	
 	_M_GripControl(Close :=	 FALSE);
 	
 END_CASE
@@ -473,10 +464,10 @@ END_CASE]]></ST>
       <LineId Id="104" Count="0" />
       <LineId Id="106" Count="0" />
       <LineId Id="111" Count="0" />
-      <LineId Id="113" Count="2" />
+      <LineId Id="115" Count="0" />
       <LineId Id="110" Count="0" />
       <LineId Id="107" Count="0" />
-      <LineId Id="117" Count="3" />
+      <LineId Id="117" Count="1" />
       <LineId Id="108" Count="1" />
       <LineId Id="105" Count="0" />
       <LineId Id="101" Count="0" />
@@ -503,13 +494,10 @@ END_CASE]]></ST>
       <LineId Id="57" Count="0" />
       <LineId Id="69" Count="0" />
       <LineId Id="59" Count="0" />
-      <LineId Id="67" Count="1" />
       <LineId Id="64" Count="0" />
       <LineId Id="63" Count="0" />
       <LineId Id="60" Count="0" />
       <LineId Id="75" Count="1" />
-      <LineId Id="71" Count="0" />
-      <LineId Id="74" Count="0" />
       <LineId Id="70" Count="0" />
       <LineId Id="62" Count="0" />
       <LineId Id="58" Count="0" />
