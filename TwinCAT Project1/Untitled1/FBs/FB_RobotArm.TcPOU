@@ -7,21 +7,16 @@ VAR
 	Outputs AT%Q* 	: ST_Outputs;
 	RobotArmJoints 	: ARRAY [1..GVL_RobotArm.NUMBER_OF_JOINTS] OF INT;
 	Index 			: INT;
-	JointTurnStep	: INT;
-	
 	//BoxPlaceLocation	: ARRAY [E_BoxPlaceDirection.PLACE1..E_BoxPlaceDirection.LastPlace] OF INT;
-END_VAR
-
-VAR PERSISTENT
-	LSTEPS		: INT := 0;
-	RSTEPS		: INT := 0;
-	FirstScan 	: BOOL := TRUE;	
-	
 	InputsDecoupled		: ST_Inputs;
 END_VAR
 
-
-]]></Declaration>
+VAR PERSISTENT
+	LSTEPS			: INT := 0;
+	RSTEPS			: INT := 0;
+	FirstScan 		: BOOL := TRUE;	
+	JointTurnStep	: INT;
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[_M_StatusUpdate();
 
@@ -66,7 +61,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[	Outputs.GRIP_CLOSE := Close;
+        <ST><![CDATA[Outputs.GRIP_CLOSE := Close;
 Outputs.GRIP_OPEN := NOT Close;
 
 		]]></ST>
@@ -83,6 +78,7 @@ END_VAR
 FOR Index := 1 TO GVL_RobotArm.NUMBER_OF_JOINTS DO
 	InputsDecoupled.JOINT_LEFT_SIGNAL[Index] := Inputs.JOINT_LEFT_SIGNAL[Index];
 	InputsDecoupled.JOINT_RIGHT_SIGNAL[Index] := Inputs.JOINT_RIGHT_SIGNAL[Index];
+	InputsDecoupled.JOINT_STRAIGHT_SIGNAL[Index] := Inputs.JOINT_STRAIGHT_SIGNAL[Index];
 END_FOR
 
 InputsDecoupled.PLACE1 := Inputs.PLACE1;
@@ -125,7 +121,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_M_DefaultPosition();
+        <ST><![CDATA[
 
 //Inputs.GRIP_CONDITION := FALSE;
 
@@ -135,7 +131,7 @@ END_VAR
 //FOR Index := 1 TO GVL_RobotArm.NUMBER_OF_JOINTS DO
 //	M_TurnJoint( TurnDirection := E_RobotArmJointDirection.LEFT, Joint := Index );
 //END_FOR
-
+_M_DefaultPosition();
 CASE JointTurnStep OF
 	1:
 		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.LEFT, Joint := JointTurnStep );
@@ -150,7 +146,7 @@ CASE JointTurnStep OF
 	3: 
 		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.LEFT, Joint := JointTurnStep );
 		IF InputsDecoupled.JOINT_LEFT_SIGNAL[JointTurnStep] THEN
-			M_PickUpFromThePlace.PLACE_NUM	:=1;
+			JointTurnStep := 0;
 		END_IF
 END_CASE
 
@@ -187,7 +183,6 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
-
 CASE JointTurnStep OF
 	1:
 		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.RIGHT, Joint := JointTurnStep );
@@ -202,7 +197,7 @@ CASE JointTurnStep OF
 	3: 
 		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.RIGHT, Joint := JointTurnStep );
 		IF InputsDecoupled.JOINT_RIGHT_SIGNAL[JointTurnStep] THEN
-			M_PlaceTo.PLACE_NUM	:=2;
+			JointTurnStep := 0;
 		END_IF
 END_CASE
 
@@ -251,42 +246,19 @@ END_VAR
 
 CASE PLACE_NUM OF
 	
-	1: // pick from place 1
-	_M_DefaultPosition();		
-	M_MoveToPlace1();
-	_M_GripControl(Close :=	 TRUE);
-		
-	2: // pick from place 2
-	_M_DefaultPosition();		
-	M_MoveToPlace2();
-	_M_GripControl(Close :=	 TRUE);
-	
+	1: //IF  place1 NOT empty
+	IF InputsDecoupled.PLACE1 THEN
+		_M_DefaultPosition();		
+		M_MoveToPlace1();
+		_M_GripControl( Close :=	 TRUE );
+	END_IF	
+	2: // //IF  place2 empty
+	IF InputsDecoupled.PLACE2 THEN
+		_M_DefaultPosition();		
+		M_MoveToPlace2();
+		_M_GripControl( Close :=	 TRUE );
+	END_IF
 END_CASE
-
-(*
-_M_DefaultPosition();
-M_MoveToPlace1();
-IF inputs.PLACE1 THEN
-	Inputs.GRIP_CONDITION	:=	FALSE;
-	_M_GripControl(Close	:=	FALSE);
-ELSIF Inputs.GRIP_CONDITION	THEN
-	Outputs.GRIP_CLOSE		:=TRUE;
-	_M_DefaultPosition();
-IF inputs.GRIP_CONDITION:=TRUE AND inputs.PLACE1:=FALSE THEN
-	_M_DefaultPosition();
-END_IF
-END_IF
-*)
-
-//IF outputs.GRIP_OPEN THEN
-//	outputs.GRIP_CLOSE		:=FALSE;
-//	inputs.PLACE1			:=TRUE;
-//	inputs.GRIP_CONDITION	:=FALSE;
-//ELSIF inputs.GRIP_CONDITION THEN
-//	Outputs.GRIP_CLOSE		:=TRUE;
-//	_M_DefaultPosition();
-//END_IF
-
 
 ]]></ST>
       </Implementation>
@@ -310,16 +282,18 @@ END_VAR
 *)
 
 CASE PLACE_NUM OF
-	1:
-	_M_DefaultPosition();
-	M_MoveToPlace1();	
-	_M_GripControl(Close :=	 FALSE);
-		
-	2:
-	_M_DefaultPosition();
-	M_MoveToPlace2();
-	_M_GripControl(Close :=	 FALSE);
-	
+	1://IF  place1 empty
+	IF InputsDecoupled.PLACE1 = FALSE THEN
+		_M_DefaultPosition();
+		M_MoveToPlace1();	
+		_M_GripControl( Close :=	FALSE );
+	END_IF	
+	2://IF  place2 empty
+	IF InputsDecoupled.PLACE2 = FALSE THEN
+		_M_DefaultPosition();
+		M_MoveToPlace2();
+		_M_GripControl( Close :=	FALSE );
+	END_IF
 END_CASE
 
 
@@ -341,7 +315,7 @@ END_CASE
     <Method Name="M_TurnJoint" Id="{215986a3-b2d9-4a5b-a2c6-326f10567f86}">
       <Declaration><![CDATA[METHOD PUBLIC M_TurnJoint : BOOL
 VAR_INPUT
-	TurnDirection 	: INT; // left / right
+	TurnDirection 	: INT; // left / right | straght
 	Joint			: INT; // 1..GVL_RobotArm.MAX_JOINT
 END_VAR
 ]]></Declaration>
@@ -352,6 +326,36 @@ CASE TurnDirection OF
 		Outputs.JOINT_TURN_LEFT[Joint] := TRUE;
 	E_RobotArmJointDirection.RIGHT: // turn right
 		Outputs.JOINT_TURN_RIGHT[Joint] := TRUE;
+	E_RobotArmJointDirection.STRAIGHT:// straight position  
+		Outputs.JOINT_TURN_LEFT[Joint] := FALSE;
+		Outputs.JOINT_TURN_RIGHT[Joint] := FALSE;
+		Outputs.JOINT_STRAIGHT[Joint] := TRUE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_ZIGZAG" Id="{3f55f078-3d00-49e8-aec7-9d26645ce0ba}">
+      <Declaration><![CDATA[METHOD PUBLIC M_ZIGZAG : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_M_DefaultPosition();
+CASE JointTurnStep OF
+	1:
+		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.LEFT, Joint := JointTurnStep );
+		IF InputsDecoupled.JOINT_LEFT_SIGNAL[JointTurnStep] THEN
+			JointTurnStep := 2;
+		END_IF
+	2: 
+		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.RIGHT, Joint := JointTurnStep );
+		IF InputsDecoupled.JOINT_RIGHT_SIGNAL[JointTurnStep] THEN
+			JointTurnStep := 3;
+		END_IF
+	3: 
+		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.STRAIGHT, Joint := JointTurnStep );
+		IF InputsDecoupled.JOINT_STRAIGHT_SIGNAL[JointTurnStep] THEN
+			JointTurnStep := 0;
+		END_IF
 END_CASE]]></ST>
       </Implementation>
     </Method>
@@ -390,6 +394,7 @@ END_CASE]]></ST>
       <LineId Id="11" Count="0" />
       <LineId Id="9" Count="1" />
       <LineId Id="13" Count="0" />
+      <LineId Id="21" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="14" Count="0" />
@@ -449,7 +454,7 @@ END_CASE]]></ST>
       <LineId Id="22" Count="0" />
     </LineIds>
     <LineIds Name="FB_RobotArm.M_MoveToPlace2">
-      <LineId Id="39" Count="1" />
+      <LineId Id="40" Count="0" />
       <LineId Id="47" Count="15" />
       <LineId Id="41" Count="5" />
       <LineId Id="15" Count="7" />
@@ -462,28 +467,17 @@ END_CASE]]></ST>
       <LineId Id="102" Count="1" />
       <LineId Id="121" Count="0" />
       <LineId Id="104" Count="0" />
+      <LineId Id="126" Count="0" />
       <LineId Id="106" Count="0" />
       <LineId Id="111" Count="0" />
       <LineId Id="115" Count="0" />
       <LineId Id="110" Count="0" />
       <LineId Id="107" Count="0" />
+      <LineId Id="127" Count="0" />
       <LineId Id="117" Count="1" />
       <LineId Id="108" Count="1" />
       <LineId Id="105" Count="0" />
-      <LineId Id="101" Count="0" />
-      <LineId Id="85" Count="0" />
-      <LineId Id="116" Count="0" />
-      <LineId Id="86" Count="0" />
-      <LineId Id="88" Count="1" />
-      <LineId Id="91" Count="0" />
-      <LineId Id="96" Count="0" />
-      <LineId Id="98" Count="0" />
-      <LineId Id="100" Count="0" />
-      <LineId Id="97" Count="0" />
-      <LineId Id="95" Count="0" />
-      <LineId Id="79" Count="0" />
-      <LineId Id="99" Count="0" />
-      <LineId Id="59" Count="11" />
+      <LineId Id="70" Count="0" />
       <LineId Id="24" Count="0" />
     </LineIds>
     <LineIds Name="FB_RobotArm.M_PlaceTo">
@@ -492,11 +486,13 @@ END_CASE]]></ST>
       <LineId Id="56" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="57" Count="0" />
+      <LineId Id="81" Count="0" />
       <LineId Id="69" Count="0" />
       <LineId Id="59" Count="0" />
       <LineId Id="64" Count="0" />
       <LineId Id="63" Count="0" />
       <LineId Id="60" Count="0" />
+      <LineId Id="82" Count="0" />
       <LineId Id="75" Count="1" />
       <LineId Id="70" Count="0" />
       <LineId Id="62" Count="0" />
@@ -518,7 +514,12 @@ END_CASE]]></ST>
       <LineId Id="152" Count="0" />
       <LineId Id="162" Count="0" />
       <LineId Id="155" Count="1" />
+      <LineId Id="171" Count="3" />
       <LineId Id="153" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_ZIGZAG">
+      <LineId Id="6" Count="16" />
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
