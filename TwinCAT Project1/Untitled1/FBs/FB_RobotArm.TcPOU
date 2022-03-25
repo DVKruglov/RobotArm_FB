@@ -43,7 +43,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_M_GripControl( Close := TRUE ); // METHOD( INPUT := , OUTPUT => )
+        <ST><![CDATA[_M_GripControl(	Close := TRUE ); // METHOD( INPUT := , OUTPUT => )
 	
 FOR Index := 1 TO GVL_RobotArm.NUMBER_OF_JOINTS DO 
 	Outputs.JOINT_TURN_LEFT[Index]	:=	FALSE;
@@ -76,8 +76,8 @@ END_VAR
         <ST><![CDATA[InputsDecoupled.GRIP_CONDITION := Inputs.GRIP_CONDITION; 
 
 FOR Index := 1 TO GVL_RobotArm.NUMBER_OF_JOINTS DO
-	InputsDecoupled.JOINT_LEFT_SIGNAL[Index] := Inputs.JOINT_LEFT_SIGNAL[Index];
-	InputsDecoupled.JOINT_RIGHT_SIGNAL[Index] := Inputs.JOINT_RIGHT_SIGNAL[Index];
+	InputsDecoupled.JOINT_LEFT_SIGNAL[Index]	 := Inputs.JOINT_LEFT_SIGNAL[Index];
+	InputsDecoupled.JOINT_RIGHT_SIGNAL[Index]	 := Inputs.JOINT_RIGHT_SIGNAL[Index];
 	InputsDecoupled.JOINT_STRAIGHT_SIGNAL[Index] := Inputs.JOINT_STRAIGHT_SIGNAL[Index];
 END_FOR
 
@@ -146,7 +146,7 @@ CASE JointTurnStep OF
 	3: 
 		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.LEFT, Joint := JointTurnStep );
 		IF InputsDecoupled.JOINT_LEFT_SIGNAL[JointTurnStep] THEN
-			JointTurnStep := 0;
+			JointTurnStep := 0;												// why 0?
 		END_IF
 END_CASE
 
@@ -247,13 +247,13 @@ END_VAR
 CASE PLACE_NUM OF
 	
 	1: //IF  place1 NOT empty
-	IF InputsDecoupled.PLACE1 THEN
+	IF InputsDecoupled.PLACE1 AND InputsDecoupled.GRIP_CONDITION	=	FALSE THEN
 		_M_DefaultPosition();		
 		M_MoveToPlace1();
 		_M_GripControl( Close :=	 TRUE );
 	END_IF	
 	2: // //IF  place2 empty
-	IF InputsDecoupled.PLACE2 THEN
+	IF InputsDecoupled.PLACE2 AND InputsDecoupled.GRIP_CONDITION	=	FALSE THEN
 		_M_DefaultPosition();		
 		M_MoveToPlace2();
 		_M_GripControl( Close :=	 TRUE );
@@ -283,13 +283,13 @@ END_VAR
 
 CASE PLACE_NUM OF
 	1://IF  place1 empty
-	IF InputsDecoupled.PLACE1 = FALSE THEN
+	IF InputsDecoupled.PLACE1 = FALSE AND InputsDecoupled.GRIP_CONDITION	= TRUE THEN
 		_M_DefaultPosition();
 		M_MoveToPlace1();	
 		_M_GripControl( Close :=	FALSE );
 	END_IF	
 	2://IF  place2 empty
-	IF InputsDecoupled.PLACE2 = FALSE THEN
+	IF InputsDecoupled.PLACE2 = FALSE AND InputsDecoupled.GRIP_CONDITION	= TRUE THEN
 		_M_DefaultPosition();
 		M_MoveToPlace2();
 		_M_GripControl( Close :=	FALSE );
@@ -322,14 +322,13 @@ END_VAR
       <Implementation>
         <ST><![CDATA[//_M_StraightJoint(); // Is it correct line?
 CASE TurnDirection OF 
-	E_RobotArmJointDirection.LEFT:// turn left  // ( Style of writing?)
+	E_RobotArmJointDirection.LEFT:// turn left  // ( Style of writing? 1. 2. 3.)
 		Outputs.JOINT_TURN_LEFT[Joint] := TRUE;
 	E_RobotArmJointDirection.RIGHT: // turn right
 		Outputs.JOINT_TURN_RIGHT[Joint] := TRUE;
 	E_RobotArmJointDirection.STRAIGHT:// straight position  
-		Outputs.JOINT_TURN_LEFT[Joint] := FALSE;
+		Outputs.JOINT_TURN_LEFT[Joint]	:= FALSE;
 		Outputs.JOINT_TURN_RIGHT[Joint] := FALSE;
-		Outputs.JOINT_STRAIGHT[Joint] := TRUE;
 END_CASE]]></ST>
       </Implementation>
     </Method>
@@ -340,6 +339,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[_M_DefaultPosition();
+_M_GripControl(	CLOSE := TRUE );
 CASE JointTurnStep OF
 	1:
 		M_TurnJoint( TurnDirection := E_RobotArmJointDirection.LEFT, Joint := JointTurnStep );
@@ -514,11 +514,13 @@ END_CASE]]></ST>
       <LineId Id="152" Count="0" />
       <LineId Id="162" Count="0" />
       <LineId Id="155" Count="1" />
-      <LineId Id="171" Count="3" />
-      <LineId Id="153" Count="0" />
+      <LineId Id="171" Count="2" />
+      <LineId Id="175" Count="0" />
     </LineIds>
     <LineIds Name="FB_RobotArm.M_ZIGZAG">
-      <LineId Id="6" Count="16" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="7" Count="15" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
