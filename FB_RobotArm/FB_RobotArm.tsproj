@@ -2,8 +2,8 @@
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.22">
 	<DataTypes>
 		<DataType>
-			<Name GUID="{F51DA11D-3121-AC56-330A-2CBF1986BABC}" AutoDeleteType="true">ST_Inputs</Name>
-			<BitSize>88</BitSize>
+			<Name GUID="{42BF6E21-7617-4157-F46D-D7BA950ED92F}" AutoDeleteType="true">ST_Inputs</Name>
+			<BitSize>96</BitSize>
 			<SubItem>
 				<Name>PLACE1</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
@@ -27,9 +27,9 @@
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<ArrayInfo>
 					<LBound>1</LBound>
-					<Elements>4</Elements>
+					<Elements>3</Elements>
 				</ArrayInfo>
-				<BitSize>32</BitSize>
+				<BitSize>24</BitSize>
 				<BitOffs>24</BitOffs>
 			</SubItem>
 			<SubItem>
@@ -37,15 +37,25 @@
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<ArrayInfo>
 					<LBound>1</LBound>
-					<Elements>4</Elements>
+					<Elements>3</Elements>
 				</ArrayInfo>
-				<BitSize>32</BitSize>
-				<BitOffs>56</BitOffs>
+				<BitSize>24</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>JOINT_STRAIGHT_SIGNAL</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<ArrayInfo>
+					<LBound>1</LBound>
+					<Elements>3</Elements>
+				</ArrayInfo>
+				<BitSize>24</BitSize>
+				<BitOffs>72</BitOffs>
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{DC9B3137-DDF9-E71F-21DD-0BA91F334E11}" AutoDeleteType="true">ST_Outputs</Name>
-			<BitSize>80</BitSize>
+			<Name GUID="{32D35A9F-7725-C992-73CE-323CA2056ABE}" AutoDeleteType="true">ST_Outputs</Name>
+			<BitSize>88</BitSize>
 			<SubItem>
 				<Name>GRIP_OPEN</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
@@ -63,9 +73,9 @@
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<ArrayInfo>
 					<LBound>1</LBound>
-					<Elements>4</Elements>
+					<Elements>3</Elements>
 				</ArrayInfo>
-				<BitSize>32</BitSize>
+				<BitSize>24</BitSize>
 				<BitOffs>16</BitOffs>
 			</SubItem>
 			<SubItem>
@@ -73,10 +83,20 @@
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<ArrayInfo>
 					<LBound>1</LBound>
-					<Elements>4</Elements>
+					<Elements>3</Elements>
 				</ArrayInfo>
-				<BitSize>32</BitSize>
-				<BitOffs>48</BitOffs>
+				<BitSize>24</BitSize>
+				<BitOffs>40</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>JOINT_STRAIGHT</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<ArrayInfo>
+					<LBound>1</LBound>
+					<Elements>3</Elements>
+				</ArrayInfo>
+				<BitSize>24</BitSize>
+				<BitOffs>64</BitOffs>
 			</SubItem>
 		</DataType>
 	</DataTypes>
@@ -89,22 +109,22 @@
 			</Tasks>
 		</System>
 		<Plc>
-			<Project GUID="{72E1FF17-BA9F-4A40-8151-4CF279B46B45}" Name="Untitled1" PrjFilePath="Untitled1\Untitled1.plcproj" TmcFilePath="Untitled1\Untitled1.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project GUID="{72E1FF17-BA9F-4A40-8151-4CF279B46B45}" Name="FB_RobotArm" PrjFilePath="FB_RobotArm\FB_RobotArm.plcproj" TmcFilePath="FB_RobotArm\FB_RobotArm.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc">
-					<Name>Untitled1 Instance</Name>
+					<Name>FB_RobotArm Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
 						<Name>PlcTask Inputs</Name>
 						<Var>
 							<Name>MAIN.RobotArm.Inputs</Name>
-							<Type GUID="{F51DA11D-3121-AC56-330A-2CBF1986BABC}">ST_Inputs</Type>
+							<Type GUID="{42BF6E21-7617-4157-F46D-D7BA950ED92F}">ST_Inputs</Type>
 						</Var>
 					</Vars>
 					<Vars VarGrpType="2" AreaNo="1">
 						<Name>PlcTask Outputs</Name>
 						<Var>
 							<Name>MAIN.RobotArm.Outputs</Name>
-							<Type GUID="{DC9B3137-DDF9-E71F-21DD-0BA91F334E11}">ST_Outputs</Type>
+							<Type GUID="{32D35A9F-7725-C992-73CE-323CA2056ABE}">ST_Outputs</Type>
 						</Var>
 					</Vars>
 					<Contexts>

@@ -3,12 +3,8 @@
   <DUT Name="ST_Inputs" Id="{d8030c2b-0c85-4476-bc48-afcf06e17b20}">
     <Declaration><![CDATA[TYPE ST_Inputs :
 STRUCT
-	PLACE1            		: BOOL;
-	PLACE2            		: BOOL;
-	GRIP_CONDITION    		: BOOL;
-	JOINT_RIGHT_SIGNAL		: ARRAY [1..3] OF BOOL;
-	JOINT_LEFT_SIGNAL		: ARRAY [1..3] OF BOOL;
-	JOINT_STRAIGHT_SIGNAL	: ARRAY [1..3] OF BOOL;
+	GRIP_CLOSED    			: BOOL;
+	JOINT_FEEDBACK_SIGNAL	: ARRAY [1..GVL_RobotArmConstants.MAX_NUMBER_OF_JOINTS] OF ST_JointDirection;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

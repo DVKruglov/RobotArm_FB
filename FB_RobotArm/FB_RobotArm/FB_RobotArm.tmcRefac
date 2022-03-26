@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Refactors>
+  <Renames>
+    <RenamedType>
+      <Type guid="3a826016-47df-4ee5-b177-5499df6b2db5">_M_STRAIGHTJOINT</Type>
+      <From>_M_StraightJoint</From>
+      <To>M_StraightJoint</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="b4076654-83fc-4691-b1b5-978eda6f60b7">_M_DEFAULTPOSITION</Type>
+      <From>_M_DefaultPosition</From>
+      <To>M_DefaultPosition</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="4500713e-daab-4b5f-93b1-f1dfd3fbfba4">_M_GRIPCONTROL</Type>
+      <From>_M_GripControl</From>
+      <To>M_GripControl</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="842cc1cd-ba85-4d04-97c1-8be629b74f41">FB_ROBOTARM_1</Type>
+      <From>FB_RobotArm_1</From>
+      <To>FB_RobotArmPickAndPlace</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="9c0230be-080f-4ca8-b2d1-76be4dc4fe1b">ST_CONFIGURATION_1</Type>
+      <From>ST_Configuration_1</From>
+      <To>ST_PickPlaceArmConfig</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="0d7a498c-12eb-4758-998c-0b68373ba906">M_PICKUPFROMTHEPLACE</Type>
+      <From>M_PickUpFromThePlace</From>
+      <To>M_PickUpFromPlace</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="331e9b70-118b-4aa9-9de3-6a7ba126a2ca">E_ROBOTARMJOINTDIRECTION_1</Type>
+      <From>E_RobotArmJointDirection_1</From>
+      <To>E_RobotArmJointDirection</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="118428c1-664d-4275-b0d0-94f66046980b">E_ROBOTARMJOINTDIRECTION_1</Type>
+      <From>E_RobotArmJointDirection_1</From>
+      <To>E_RobotArmJointDirection</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="a41ea49e-68df-412f-aba6-c01a10f18526">E_ROBOTARMJOINTDIRECTION_1</Type>
+      <From>E_RobotArmJointDirection_1</From>
+      <To>E_BoxPlaceDirection</To>
+    </RenamedType>
+    <RenamedSymbol>
+      <Type guid="d8030c2b-0c85-4476-bc48-afcf06e17b20">ST_Inputs</Type>
+      <From>GRIP_CONDITION</From>
+      <To>GRIP_CLOSED</To>
+    </RenamedSymbol>
+    <RenamedType>
+      <Type guid="52ec975c-0c83-41d0-952a-9b54d37767b8">E_BOXPLACEDIRECTION_1</Type>
+      <From>E_BoxPlaceDirection_1</From>
+      <To>E_PickPlaceStep</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="88832887-3b21-4aea-b440-4c128fefd859">M_PLACETO_1</Type>
+      <From>M_PlaceTo_1</From>
+      <To>M_ForwardKinematics</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="ca86a206-bc04-4298-be8f-9fadc8ba7dfd">ST_OUTPUTS_1</Type>
+      <From>ST_Outputs_1</From>
+      <To>ST_JointDirection</To>
+    </RenamedType>
+  </Renames>
+</Refactors>

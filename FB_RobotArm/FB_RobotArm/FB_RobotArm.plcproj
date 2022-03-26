@@ -7,7 +7,7 @@
     <DownloadApplicationInfo>true</DownloadApplicationInfo>
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
-    <Name>Untitled1</Name>
+    <Name>FB_RobotArm</Name>
     <ProgramVersion>3.1.4023.0</ProgramVersion>
     <Application>{a891810e-18a4-4ad7-8ac9-cc838c5fd2b4}</Application>
     <TypeSystem>{8fda3d01-39fe-477f-a822-4475149dcd90}</TypeSystem>
@@ -15,26 +15,35 @@
     <Implicit_KindOfTask>{109e50e2-1282-4e48-8dcc-14a1786123dc}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{e731bd47-8675-4839-8bc5-b59d2d6f64b7}</Implicit_Jitter_Distribution>
     <LibraryReferences>{65321b3e-cebb-4647-906d-0b134c8f5a32}</LibraryReferences>
+    <Company>DVKruglov</Company>
+    <Released>false</Released>
+    <ProjectVersion>1.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FBs\Enumeration\E_BoxPlaceDirection.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FBs\Enumeration\E_RobotArmJointDirection.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FBs\FB_RobotArm.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FBs\Structures\ST_Inputs.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FBs\Structures\ST_Outputs.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GVLs\GVL_RobotArm.TcGVL">
+    <Compile Include="FB_RobotArmBase\Constants\GVL_RobotArmConstants.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="FB_RobotArmBase\Enumeration\E_RobotArmJointDirection.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmBase\FB_RobotArm.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmBase\Structures\ST_Inputs.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmBase\Structures\ST_Configuration.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmBase\Structures\ST_Outputs.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmPickAndPlace\FB_RobotArmPickAndPlace.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmPickAndPlace\Structures\ST_PickPlaceArmConfig.TcDUT">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
@@ -45,10 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
-    <Folder Include="FBs\Enumeration" />
-    <Folder Include="FBs\Structures" />
-    <Folder Include="GVLs" />
-    <Folder Include="FBs" />
+    <Folder Include="FB_RobotArmBase\Constants" />
+    <Folder Include="FB_RobotArmBase\Enumeration" />
+    <Folder Include="FB_RobotArmBase\Structures" />
+    <Folder Include="FB_RobotArmBase" />
+    <Folder Include="FB_RobotArmPickAndPlace" />
+    <Folder Include="FB_RobotArmPickAndPlace\Enumeration" />
+    <Folder Include="FB_RobotArmPickAndPlace\Structures" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>
@@ -67,7 +79,7 @@
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Untitled1.tmc">
+    <None Include="FB_RobotArm.tmc">
       <SubType>Content</SubType>
     </None>
   </ItemGroup>

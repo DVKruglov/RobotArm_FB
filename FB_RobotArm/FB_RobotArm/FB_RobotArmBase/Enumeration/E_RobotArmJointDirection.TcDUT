@@ -1,15 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <DUT Name="E_BoxPlaceDirection" Id="{f3a18dd6-5bf0-41b1-b79a-6118fc2ea694}">
+  <DUT Name="E_RobotArmJointDirection" Id="{118428c1-664d-4275-b0d0-94f66046980b}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
-TYPE E_BoxPlaceDirection :
+TYPE E_RobotArmJointDirection :
 (
-	PLACE1 := 1,
-	PLACE2 := 2,
-	PLACE3 := 3,
-	
-	LastPlace
+	LEFT		:=	1,
+	RIGHT		:=	2
 );
 END_TYPE
 ]]></Declaration>

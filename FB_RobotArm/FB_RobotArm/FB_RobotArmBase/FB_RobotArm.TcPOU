@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="FB_RobotArm" Id="{791aebaa-e1af-4e34-82e6-21b6dcafec81}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_RobotArm
+VAR
+	Inputs 		AT%I* 	: ST_Inputs;
+	Outputs 	AT%Q* 	: ST_Outputs;
+	BaseConfiguration	: ST_Configuration;
+	RobotArmJoints 		: ARRAY [1..BaseConfiguration.NUMBER_OF_JOINTS] OF INT;
+	Index 				: INT;
+	InputsDecoupled		: ST_Inputs;
+	
+	test				: INT;
+END_VAR
+
+VAR PERSISTENT
+	FirstScan 			: BOOL := TRUE;	
+	JointTurnStep		: INT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_M_StatusUpdate();]]></ST>
+    </Implementation>
+    <Folder Name="Private" Id="{8e206af4-6c72-4040-98dd-746c939058b7}" />
+    <Method Name="_M_CheckDefaultPosition" Id="{743a2cd5-3924-4b11-ad22-798b1aacf773}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE _M_CheckDefaultPosition : BOOL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_M_CheckDefaultPosition := TRUE;
+
+FOR Index := 1 TO BaseConfiguration.NUMBER_OF_JOINTS DO
+	_M_CheckDefaultPosition := _M_CheckDefaultPosition AND (NOT InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index].Right) AND (NOT InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index].Left);
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_M_StatusUpdate" Id="{424b32d3-2991-4e75-a053-29a008bea2c1}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE _M_StatusUpdate : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[InputsDecoupled.GRIP_CLOSED := Inputs.GRIP_CLOSED; 
+
+FOR Index := 1 TO BaseConfiguration.NUMBER_OF_JOINTS DO
+	InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index]	 := Inputs.JOINT_FEEDBACK_SIGNAL[Index];
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_DefaultPosition" Id="{b4076654-83fc-4691-b1b5-978eda6f60b7}">
+      <Declaration><![CDATA[METHOD PUBLIC M_DefaultPosition : BOOL
+VAR
+	Index		: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[M_GripControl(	Close := TRUE ); // METHOD( INPUT := , OUTPUT => )
+	
+FOR Index := 1 TO BaseConfiguration.NUMBER_OF_JOINTS DO 
+	Outputs.JOINT_TURN[Index].Left	:=	FALSE;
+	Outputs.JOINT_TURN[Index].Right	:=	FALSE;
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_ForwardKinematics" Id="{88832887-3b21-4aea-b440-4c128fefd859}">
+      <Declaration><![CDATA[METHOD PUBLIC M_ForwardKinematics : BOOL
+VAR_IN_OUT
+	ForwardKinematicsJointControl	: ARRAY[1..GVL_RobotArmConstants.MAX_NUMBER_OF_JOINTS] OF ST_JointDirection;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// hint: use P_RobotArmBaseConfiguration.NUMBER_OF_JOINTS]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_GripControl" Id="{4500713e-daab-4b5f-93b1-f1dfd3fbfba4}">
+      <Declaration><![CDATA[METHOD PUBLIC M_GripControl : BOOL
+VAR_INPUT
+	Close	: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Outputs.GRIP_CLOSE := Close;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_StraightJoint" Id="{3a826016-47df-4ee5-b177-5499df6b2db5}">
+      <Declaration><![CDATA[METHOD PUBLIC M_StraightJoint : BOOL
+VAR_INPUT
+	Joint				: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Outputs.JOINT_TURN[Joint].Left	:= FALSE;
+Outputs.JOINT_TURN[Joint].Right := FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_TurnJoint" Id="{215986a3-b2d9-4a5b-a2c6-326f10567f86}">
+      <Declaration><![CDATA[METHOD PUBLIC M_TurnJoint : BOOL
+VAR_INPUT
+	TurnDirection 	: INT; // left / right | straght
+	Joint			: INT; // 1..GVL_RobotArm.MAX_JOINT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE TurnDirection OF 
+	E_RobotArmJointDirection.LEFT: // turn left  
+		Outputs.JOINT_TURN[Joint].Left	:= TRUE;
+	E_RobotArmJointDirection.RIGHT: // turn right
+		Outputs.JOINT_TURN[Joint].Right := TRUE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="P_RobotArmBaseConfiguration" Id="{61674fbe-135f-48cf-a612-0ccb9fb71e9a}">
+      <Declaration><![CDATA[PROPERTY PUBLIC P_RobotArmBaseConfiguration : REFERENCE TO ST_Configuration]]></Declaration>
+      <Get Name="Get" Id="{f7088eae-ffd8-462d-8c42-98d46ad3ff3a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[P_RobotArmBaseConfiguration REF= BaseConfiguration;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{dc363d0e-5ad7-4faf-83df-acb778b5db92}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[BaseConfiguration REF= P_RobotArmBaseConfiguration;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="P_Test" Id="{e3030366-627c-479b-be17-27ea2b737aef}">
+      <Declaration><![CDATA[PROPERTY PUBLIC P_Test : REFERENCE TO ST_Configuration]]></Declaration>
+      <Get Name="Get" Id="{198e5989-fe23-4038-aec6-4f9b385a0f87}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[P_Test := test;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{1d62fda5-c409-4347-916f-530aafc8a998}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[test := P_Test;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <LineIds Name="FB_RobotArm">
+      <LineId Id="59" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm._M_CheckDefaultPosition">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm._M_StatusUpdate">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="16" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_DefaultPosition">
+      <LineId Id="80" Count="4" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_ForwardKinematics">
+      <LineId Id="27" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_GripControl">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_StraightJoint">
+      <LineId Id="54" Count="0" />
+      <LineId Id="56" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.M_TurnJoint">
+      <LineId Id="150" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="181" Count="0" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="173" Count="0" />
+      <LineId Id="175" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.P_RobotArmBaseConfiguration.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.P_RobotArmBaseConfiguration.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.P_Test.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RobotArm.P_Test.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

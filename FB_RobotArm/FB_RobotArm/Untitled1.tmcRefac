@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Refactors>
+  <Renames>
+    <RenamedType>
+      <Type guid="675c521e-6920-4694-8128-804f95be4939">ST_INPUTS_1</Type>
+      <From>ST_Inputs_1</From>
+      <To>ST_Configuration</To>
+    </RenamedType>
+  </Renames>
+</Refactors>

@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <DUT Name="E_RobotArmJointDirection" Id="{0de8fc1a-c2f5-4caf-abc5-42bd4f3783ea}">
+  <DUT Name="E_PickPlaceStep" Id="{52ec975c-0c83-41d0-952a-9b54d37767b8}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
-TYPE E_RobotArmJointDirection :
+TYPE E_PickPlaceStep :
 (
-	LEFT		:=	1,
-	RIGHT		:=	2,
-	STRAIGHT	:=	3
+	DO_NOTHING 	:= 0,
+	MOVE_HAND 	:= 1,
+	CHECK_GRIP	:= 2,
+	USE_GRIP	:= 3
 );
 END_TYPE
 ]]></Declaration>
