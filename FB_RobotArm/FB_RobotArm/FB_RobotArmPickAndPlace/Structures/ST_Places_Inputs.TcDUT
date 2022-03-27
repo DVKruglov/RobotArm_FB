@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="ST_Places_Inputs" Id="{4d3a5405-dd11-47ff-8352-96bdd4158bbb}">
+    <Declaration><![CDATA[TYPE ST_Places_Inputs :
+STRUCT
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

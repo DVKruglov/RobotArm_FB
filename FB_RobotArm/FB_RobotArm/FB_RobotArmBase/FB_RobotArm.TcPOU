@@ -8,7 +8,7 @@ VAR
 	BaseConfiguration	: ST_Configuration;
 	RobotArmJoints 		: ARRAY [1..BaseConfiguration.NUMBER_OF_JOINTS] OF INT;
 	Index 				: INT;
-	InputsDecoupled		: ST_Inputs;
+	InputsDecoupled		: ST_Inputs; // ? 1st line the same
 	
 	test				: INT;
 END_VAR
@@ -27,7 +27,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[_M_CheckDefaultPosition := TRUE;
 
 FOR Index := 1 TO BaseConfiguration.NUMBER_OF_JOINTS DO
-	_M_CheckDefaultPosition := _M_CheckDefaultPosition AND (NOT InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index].Right) AND (NOT InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index].Left);
+	_M_CheckDefaultPosition := _M_CheckDefaultPosition AND (NOT Inputs.JOINT_FEEDBACK_SIGNAL[Index].Right) AND (NOT InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index].Left);
 END_FOR]]></ST>
       </Implementation>
     </Method>
@@ -64,10 +64,11 @@ END_FOR
     <Method Name="M_ForwardKinematics" Id="{88832887-3b21-4aea-b440-4c128fefd859}">
       <Declaration><![CDATA[METHOD PUBLIC M_ForwardKinematics : BOOL
 VAR_IN_OUT
-	ForwardKinematicsJointControl	: ARRAY[1..GVL_RobotArmConstants.MAX_NUMBER_OF_JOINTS] OF ST_JointDirection;
+	ForwardKinematicsJointControl	: ARRAY[1..GVL_RobotArmConstants.MAX_NUMBER_OF_JOINTS] OF E_RobotArmJointDirection; // changed ST_JointDirection to E_RobotArmJointDirection
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// hint: use P_RobotArmBaseConfiguration.NUMBER_OF_JOINTS]]></ST>
+        <ST><![CDATA[// hint: use P_RobotArmBaseConfiguration.NUMBER_OF_JOINTS
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_GripControl" Id="{4500713e-daab-4b5f-93b1-f1dfd3fbfba4}">
@@ -94,7 +95,7 @@ Outputs.JOINT_TURN[Joint].Right := FALSE;]]></ST>
     <Method Name="M_TurnJoint" Id="{215986a3-b2d9-4a5b-a2c6-326f10567f86}">
       <Declaration><![CDATA[METHOD PUBLIC M_TurnJoint : BOOL
 VAR_INPUT
-	TurnDirection 	: INT; // left / right | straght
+	TurnDirection 	: INT; // left / right
 	Joint			: INT; // 1..GVL_RobotArm.MAX_JOINT
 END_VAR
 ]]></Declaration>
@@ -167,6 +168,7 @@ END_VAR
     </LineIds>
     <LineIds Name="FB_RobotArm.M_ForwardKinematics">
       <LineId Id="27" Count="0" />
+      <LineId Id="31" Count="0" />
     </LineIds>
     <LineIds Name="FB_RobotArm.M_GripControl">
       <LineId Id="5" Count="0" />

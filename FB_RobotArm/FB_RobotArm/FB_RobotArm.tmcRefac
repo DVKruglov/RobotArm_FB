@@ -66,5 +66,15 @@
       <From>ST_Outputs_1</From>
       <To>ST_JointDirection</To>
     </RenamedType>
+    <RenamedType>
+      <Type guid="f1752029-6e73-4ff7-b2e9-1bbd108401ec">ST_PLACES_INPUTS_1</Type>
+      <From>ST_Places_Inputs_1</From>
+      <To>ST_Places_Outputs</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="5cbc633d-127b-4371-ab70-958a1327469b">GVL_ROBOTARMPICKANADPLACECONSTANTS</Type>
+      <From>GVL_RobotArmPickAnadPlaceConstants</From>
+      <To>GVL_RobotArmPickAndPlaceConstants</To>
+    </RenamedType>
   </Renames>
 </Refactors>
