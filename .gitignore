@@ -1,4 +1,8 @@
 *.project.~u
+*.tsproj.bak
+*.xti.bak
 *.suo
-.vs
+.vs/
+_CompileInfo/
+_Libraries/
 FB_RobotArm.project.~u
