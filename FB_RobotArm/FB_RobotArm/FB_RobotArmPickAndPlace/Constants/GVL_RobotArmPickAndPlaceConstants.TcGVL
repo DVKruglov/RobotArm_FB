@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <GVL Name="GVL_RobotArmPickAnadPlaceConstants" Id="{5cbc633d-127b-4371-ab70-958a1327469b}">
-    <Declaration><![CDATA[{attribute 'qualified_only'}
-VAR_GLOBAL
-END_VAR]]></Declaration>
-  </GVL>
-</TcPlcObject>

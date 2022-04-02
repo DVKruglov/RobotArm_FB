@@ -4,7 +4,7 @@
     <Declaration><![CDATA[TYPE ST_Outputs :
 STRUCT	
 	GRIP_CLOSE				: BOOL;
-	JOINT_TURN		  		: ARRAY [1..GVL_RobotArmConstants.MAX_NUMBER_OF_JOINTS] OF ST_JointDirection;
+	JOINT_TURN		  		: ARRAY [1..GVL_RobotArmConstants.MAX_NUMBER_OF_JOINTS] OF ST_JointDirection; 
 END_STRUCT
 END_TYPE
 ]]></Declaration>

@@ -76,5 +76,10 @@
       <From>GVL_RobotArmPickAnadPlaceConstants</From>
       <To>GVL_RobotArmPickAndPlaceConstants</To>
     </RenamedType>
+    <RenamedType>
+      <Type guid="227fd2f4-750e-4c49-be66-65221fdea7d6">BOX</Type>
+      <From>box</From>
+      <To>ST_Places_Outputs</To>
+    </RenamedType>
   </Renames>
 </Refactors>

@@ -5,12 +5,11 @@
 VAR
 	Inputs 		AT%I* 	: ST_Inputs;
 	Outputs 	AT%Q* 	: ST_Outputs;
-	BaseConfiguration	: ST_Configuration;
+	BaseConfiguration	: ST_Configuration; //REFERENCE TO
 	RobotArmJoints 		: ARRAY [1..BaseConfiguration.NUMBER_OF_JOINTS] OF INT;
 	Index 				: INT;
-	InputsDecoupled		: ST_Inputs; // ? 1st line the same
-	
-	test				: INT;
+	//Joint				: INT := BaseConfiguration.NUMBER_OF_JOINTS;
+	InputsDecoupled		: ST_Inputs; 
 END_VAR
 
 VAR PERSISTENT
@@ -26,8 +25,8 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[_M_CheckDefaultPosition := TRUE;
 
-FOR Index := 1 TO BaseConfiguration.NUMBER_OF_JOINTS DO
-	_M_CheckDefaultPosition := _M_CheckDefaultPosition AND (NOT Inputs.JOINT_FEEDBACK_SIGNAL[Index].Right) AND (NOT InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index].Left);
+FOR Index := 1 TO BaseConfiguration.NUMBER_OF_JOINTS DO // WHy don't we have if here ???
+	_M_CheckDefaultPosition := _M_CheckDefaultPosition AND (NOT InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index].Right) AND (NOT InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index].Left);
 END_FOR]]></ST>
       </Implementation>
     </Method>
@@ -40,23 +39,21 @@ END_VAR
         <ST><![CDATA[InputsDecoupled.GRIP_CLOSED := Inputs.GRIP_CLOSED; 
 
 FOR Index := 1 TO BaseConfiguration.NUMBER_OF_JOINTS DO
-	InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index]	 := Inputs.JOINT_FEEDBACK_SIGNAL[Index];
+	InputsDecoupled.JOINT_FEEDBACK_SIGNAL[Index]	:= Inputs.JOINT_FEEDBACK_SIGNAL[Index];
 END_FOR
 ]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_DefaultPosition" Id="{b4076654-83fc-4691-b1b5-978eda6f60b7}">
       <Declaration><![CDATA[METHOD PUBLIC M_DefaultPosition : BOOL
-VAR
-	Index		: INT;
-END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[M_GripControl(	Close := TRUE ); // METHOD( INPUT := , OUTPUT => )
+        <ST><![CDATA[M_GripControl( Close := TRUE ); // METHOD( INPUT := , OUTPUT => )
 	
 FOR Index := 1 TO BaseConfiguration.NUMBER_OF_JOINTS DO 
-	Outputs.JOINT_TURN[Index].Left	:=	FALSE;
-	Outputs.JOINT_TURN[Index].Right	:=	FALSE;
+//	Outputs.JOINT_TURN[Index].Left	:=	FALSE;
+//	Outputs.JOINT_TURN[Index].Right	:=	FALSE;
+	M_StraightJoint( Joint := Index );
 END_FOR
 ]]></ST>
       </Implementation>
@@ -64,10 +61,10 @@ END_FOR
     <Method Name="M_ForwardKinematics" Id="{88832887-3b21-4aea-b440-4c128fefd859}">
       <Declaration><![CDATA[METHOD PUBLIC M_ForwardKinematics : BOOL
 VAR_IN_OUT
-	ForwardKinematicsJointControl	: ARRAY[1..GVL_RobotArmConstants.MAX_NUMBER_OF_JOINTS] OF E_RobotArmJointDirection; // changed ST_JointDirection to E_RobotArmJointDirection
+	ForwardKinematicsJointControl	: ARRAY[1..GVL_RobotArmConstants.MAX_NUMBER_OF_JOINTS] OF ST_JointDirection; 
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// hint: use P_RobotArmBaseConfiguration.NUMBER_OF_JOINTS
+        <ST><![CDATA[// hint: use BaseConfiguration.NUMBER_OF_JOINTS
 ]]></ST>
       </Implementation>
     </Method>
@@ -84,7 +81,7 @@ END_VAR
     <Method Name="M_StraightJoint" Id="{3a826016-47df-4ee5-b177-5499df6b2db5}">
       <Declaration><![CDATA[METHOD PUBLIC M_StraightJoint : BOOL
 VAR_INPUT
-	Joint				: INT;
+	Joint : INT;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -93,10 +90,11 @@ Outputs.JOINT_TURN[Joint].Right := FALSE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_TurnJoint" Id="{215986a3-b2d9-4a5b-a2c6-326f10567f86}">
-      <Declaration><![CDATA[METHOD PUBLIC M_TurnJoint : BOOL
+      <Declaration><![CDATA[METHOD PUBLIC M_TurnJoint
 VAR_INPUT
-	TurnDirection 	: INT; // left / right
-	Joint			: INT; // 1..GVL_RobotArm.MAX_JOINT
+	TurnDirection : INT; // 1 - LEFT, 2 - RIGHT
+	
+	Joint : INT;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -109,7 +107,9 @@ END_CASE]]></ST>
       </Implementation>
     </Method>
     <Property Name="P_RobotArmBaseConfiguration" Id="{61674fbe-135f-48cf-a612-0ccb9fb71e9a}">
-      <Declaration><![CDATA[PROPERTY PUBLIC P_RobotArmBaseConfiguration : REFERENCE TO ST_Configuration]]></Declaration>
+      <Declaration><![CDATA[PROPERTY PUBLIC P_RobotArmBaseConfiguration : REFERENCE TO ST_Configuration
+
+///Why do we create that properties?]]></Declaration>
       <Get Name="Get" Id="{f7088eae-ffd8-462d-8c42-98d46ad3ff3a}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -124,25 +124,6 @@ END_VAR
 ]]></Declaration>
         <Implementation>
           <ST><![CDATA[BaseConfiguration REF= P_RobotArmBaseConfiguration;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
-    <Property Name="P_Test" Id="{e3030366-627c-479b-be17-27ea2b737aef}">
-      <Declaration><![CDATA[PROPERTY PUBLIC P_Test : REFERENCE TO ST_Configuration]]></Declaration>
-      <Get Name="Get" Id="{198e5989-fe23-4038-aec6-4f9b385a0f87}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[P_Test := test;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{1d62fda5-c409-4347-916f-530aafc8a998}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[test := P_Test;]]></ST>
         </Implementation>
       </Set>
     </Property>
@@ -163,12 +144,13 @@ END_VAR
     </LineIds>
     <LineIds Name="FB_RobotArm.M_DefaultPosition">
       <LineId Id="80" Count="4" />
+      <LineId Id="91" Count="0" />
       <LineId Id="86" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_RobotArm.M_ForwardKinematics">
       <LineId Id="27" Count="0" />
-      <LineId Id="31" Count="0" />
+      <LineId Id="37" Count="0" />
     </LineIds>
     <LineIds Name="FB_RobotArm.M_GripControl">
       <LineId Id="5" Count="0" />
@@ -183,18 +165,12 @@ END_VAR
       <LineId Id="181" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="173" Count="0" />
-      <LineId Id="175" Count="0" />
+      <LineId Id="190" Count="0" />
     </LineIds>
     <LineIds Name="FB_RobotArm.P_RobotArmBaseConfiguration.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_RobotArm.P_RobotArmBaseConfiguration.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_RobotArm.P_Test.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_RobotArm.P_Test.Set">
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

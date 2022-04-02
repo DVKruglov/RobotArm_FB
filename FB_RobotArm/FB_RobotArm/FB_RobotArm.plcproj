@@ -36,13 +36,29 @@
     <Compile Include="FB_RobotArmBase\Structures\ST_Configuration.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FB_RobotArmBase\Structures\ST_JointDirection.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="FB_RobotArmBase\Structures\ST_Outputs.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmPickAndPlace\Constants\GVL_RobotArmPickAndPlaceConstants.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="FB_RobotArmPickAndPlace\Enumeration\E_BoxPlaceDirection.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmPickAndPlace\Enumeration\E_PickPlaceStep.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FB_RobotArmPickAndPlace\FB_RobotArmPickAndPlace.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FB_RobotArmPickAndPlace\Structures\ST_PickPlaceArmConfig.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FB_RobotArmPickAndPlace\Structures\ST_Places_Inputs.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
@@ -60,6 +76,7 @@
     <Folder Include="FB_RobotArmBase" />
     <Folder Include="FB_RobotArmPickAndPlace" />
     <Folder Include="FB_RobotArmPickAndPlace\Enumeration" />
+    <Folder Include="FB_RobotArmPickAndPlace\Constants" />
     <Folder Include="FB_RobotArmPickAndPlace\Structures" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
